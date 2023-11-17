@@ -4,6 +4,7 @@ import generalStyles from './src/utils/generalStyles';
 import Icon from 'react-native-vector-icons/dist/AntDesign';
 import Input from './src/components/Input';
 import {colors} from './src/utils/constants';
+import Todo from './src/components/Todo';
 
 import {
   Alert,
@@ -22,7 +23,7 @@ function App(): JSX.Element {
       id: String(new Date().getTime()),
       text: text,
       date: new Date(),
-      complated: false,
+      completed: false,
     };
 
     setTodos([...todos, newTodo]);
@@ -46,7 +47,9 @@ function App(): JSX.Element {
           </Text>
         ) : (
           <ScrollView style={styles.scroolView}>
-            <Text>başarılı</Text>
+            {todos?.map(todo => (
+              <Todo key={todo?.id} todo={todo} />
+            ))}
           </ScrollView>
         )}
       </View>
@@ -57,7 +60,7 @@ function App(): JSX.Element {
 const styles = StyleSheet.create({
   todosWrapper: {
     flex: 1,
-    borderWidth: 1,
+
     marginHorizontal: 20,
     marginVertical: 30,
   },

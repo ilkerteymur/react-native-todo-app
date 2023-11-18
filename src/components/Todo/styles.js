@@ -14,6 +14,10 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     fontSize: 20,
   },
+  complatedTitle: {
+    color: colors.danger,
+    textDecorationLine: 'line-through',
+  },
   date: {
     color: colors.textPrimary,
     marginTop: 10,

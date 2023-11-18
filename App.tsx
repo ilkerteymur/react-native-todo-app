@@ -48,7 +48,12 @@ function App(): JSX.Element {
         ) : (
           <ScrollView style={styles.scroolView}>
             {todos?.map(todo => (
-              <Todo key={todo?.id} todo={todo} />
+              <Todo
+                todos={todos}
+                setTodos={setTodos}
+                key={todo?.id}
+                todo={todo}
+              />
             ))}
           </ScrollView>
         )}

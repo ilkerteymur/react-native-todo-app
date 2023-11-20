@@ -4,6 +4,7 @@ import styles from './styles';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {colors} from '../../utils/constants';
 import EditModal from '../EditModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Todo = ({todo = {}, todos = [], setTodos = () => {}}) => {
   const [openModal, setOpenModal] = useState(false);
@@ -11,7 +12,7 @@ const Todo = ({todo = {}, todos = [], setTodos = () => {}}) => {
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const deleteTodo = () => {
-    Alert.alert('silme butonu', `${todo?.id} numaralı todoyu sil?`, [
+    Alert.alert(`Todo'yu Sil ?`, 'Emin Misiniz ?', [
       {
         text: 'Vazgeç',
       },
@@ -19,7 +20,10 @@ const Todo = ({todo = {}, todos = [], setTodos = () => {}}) => {
         text: 'Sil',
         onPress: () => {
           const filteredTodos = todos.filter(item => item.id !== todo.id);
-          setTodos(filteredTodos);
+          AsyncStorage.setItem('@todos', JSON.stringify(filteredTodos)).then(
+            () => setTodos(filteredTodos),
+          );
+          // setTodos(filteredTodos);
         },
         style: 'destructive',
       },
@@ -46,6 +50,9 @@ const Todo = ({todo = {}, todos = [], setTodos = () => {}}) => {
               tempArray.push(newTodo);
             }
           }
+          AsyncStorage.setItem('@todos', JSON.stringify(tempArray)).then(() =>
+            setTodos(tempArray),
+          );
           setTodos(tempArray);
         },
         style: 'destructive',
@@ -74,8 +81,10 @@ const Todo = ({todo = {}, todos = [], setTodos = () => {}}) => {
         tempArr.push(updatedTodo);
       }
     }
-    setTodos(tempArr);
-    setOpenModal(false);
+    AsyncStorage.setItem('@todos', JSON.stringify(tempArr)).then(() => {
+      setTodos(tempArr);
+      setOpenModal(false);
+    });
   };
   return (
     <View style={styles.todoWrapper}>

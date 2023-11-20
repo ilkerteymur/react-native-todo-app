@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from './src/components/Header';
 import generalStyles from './src/utils/generalStyles';
 import Icon from 'react-native-vector-icons/dist/AntDesign';
 import Input from './src/components/Input';
 import {colors} from './src/utils/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Todo from './src/components/Todo';
 
 import {
@@ -19,16 +20,35 @@ function App(): JSX.Element {
   const [text, setText] = useState('');
   const [todos, setTodos] = useState([]);
   const addTodo = () => {
+    if (text === '') {
+      Alert.alert('Bu Alan Boş Bırakılamaz.');
+      return;
+    }
     const newTodo = {
       id: String(new Date().getTime()),
       text: text,
       date: new Date(),
       completed: false,
     };
-
-    setTodos([...todos, newTodo]);
-    setText('');
+    AsyncStorage.setItem('@todos', JSON.stringify([...todos, newTodo]))
+      .then(() => {
+        setTodos([...todos, newTodo]);
+        setText('');
+      })
+      .catch(err => {
+        Alert.alert('Hata', 'Kayıt Esnasında Bir Hata Oluştu');
+      });
   };
+  useEffect(() => {
+    AsyncStorage.getItem('@todos')
+      .then(res => {
+        if (res !== null) {
+          const parsedRes = JSON.parse(res);
+          setTodos(parsedRes);
+        }
+      })
+      .catch(err => console.warn(err));
+  }, []);
   return (
     <SafeAreaView style={[generalStyles.flex1, generalStyles.bgWhite]}>
       <Header title="My Todo App" />
